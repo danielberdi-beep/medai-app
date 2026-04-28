@@ -28,8 +28,19 @@ const save  = (u) => { try { localStorage.setItem("medai_u", JSON.stringify(u));
 const load  = ()  => { try { return JSON.parse(localStorage.getItem("medai_u")); } catch { return null; } };
 const clear = ()  => { try { localStorage.removeItem("medai_u"); } catch {} };
 
+const HARDCODED_STRIPE_LINKS = {
+  monthly: "https://buy.stripe.com/9B614oeVx5kq3HDbGe43T1n",
+  annual:  "https://buy.stripe.com/4gM00k00DeV06TPeSq43T1m",
+};
+
 const getStripeLinks = () => {
-  try { return JSON.parse(localStorage.getItem("medai_stripe") || "{}"); } catch { return {}; }
+  try {
+    const saved = JSON.parse(localStorage.getItem("medai_stripe") || "{}");
+    return {
+      monthly: saved.monthly || HARDCODED_STRIPE_LINKS.monthly,
+      annual:  saved.annual  || HARDCODED_STRIPE_LINKS.annual,
+    };
+  } catch { return HARDCODED_STRIPE_LINKS; }
 };
 const saveStripeLinks = (d) => {
   try { localStorage.setItem("medai_stripe", JSON.stringify(d)); } catch {}
@@ -423,7 +434,7 @@ function UpgradeModal({ onClose, onConfirmed }) {
 
 // ════ MAIN ═══════════════════════════════════════
 export default function MedAI() {
-  const [setupDone,setSetupDone]=useState(()=>!!getStripeLinks().monthly||!!getStripeLinks().annual);
+  const [setupDone,setSetupDone]=useState(true);
   const [user,setUser]=useState(()=>load());
   const [msgs,setMsgs]=useState([]);
   const [input,setInput]=useState("");

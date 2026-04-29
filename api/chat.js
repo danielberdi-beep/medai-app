@@ -8,7 +8,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { model, max_tokens, system, messages } = req.body;
+    let body = req.body;
+    
+    if (typeof body === 'string') {
+      body = JSON.parse(body);
+    }
+    
+    if (!body) {
+      const chunks = [];
+      for await (const chunk of req) {
+        chunks.push(chunk);
+      }
+      body = JSON.parse(Buffer.concat(chunks).toString());
+    }
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -18,10 +30,10 @@ export default async function handler(req, res) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: model || 'claude-sonnet-4-20250514',
-        max_tokens: max_tokens || 1000,
-        system: system,
-        messages: messages
+        model: body.model || 'claude-sonnet-4-20250514',
+        max_tokens: body.max_tokens || 1000,
+        system: body.system,
+        messages: body.messages
       })
     });
 

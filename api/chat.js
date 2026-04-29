@@ -1,11 +1,3 @@
-import { buffer } from 'micro';
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -16,8 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const buf = await buffer(req);
-    const body = JSON.parse(buf.toString());
+    const { model, max_tokens, system, messages } = req.body;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -27,10 +18,10 @@ export default async function handler(req, res) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: body.model || 'claude-sonnet-4-20250514',
-        max_tokens: body.max_tokens || 1000,
-        system: body.system,
-        messages: body.messages
+        model: model || 'claude-sonnet-4-20250514',
+        max_tokens: max_tokens || 1000,
+        system: system,
+        messages: messages
       })
     });
 

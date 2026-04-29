@@ -470,7 +470,7 @@ export default function MedAI() {
       const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:SYSTEM_PROMPT,messages:newMsgs})});
       const data=await res.json();
-      setMsgs([...newMsgs,{role:"assistant",content:data.content?.[0]?.text||"Sin respuesta."}]);
+      const reply = (data.content?.filter(b=>b.type==="text").map(b=>b.text).join("")) || data.content?.[0]?.text || "Sin respuesta."; setMsgs([...newMsgs,{role:"assistant",content:reply}]);
     }catch{setErr("Error de conexión.");}
     finally{setBusy(false);}
   };

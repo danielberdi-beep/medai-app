@@ -1,3 +1,11 @@
+import { buffer } from 'micro';
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -8,8 +16,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const body = req.body;
-    
+    const buf = await buffer(req);
+    const body = JSON.parse(buf.toString());
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -25,17 +34,11 @@ export default async function handler(req, res) {
       })
     });
 
-    const text = await response.text();
-    
-    try {
-      const data = JSON.parse(text);
-      return res.status(200).json(data);
-    } catch {
-      return res.status(200).json({ content: [{ type: 'text', text: text }] });
-    }
+    const data = await response.json();
+    return res.status(200).json(data);
 
   } catch (error) {
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: error.message,
       content: [{ type: 'text', text: 'Error: ' + error.message }]
     });

@@ -47,7 +47,7 @@ const saveStripeLinks = (d) => {
 };
 
 async function setupStripe() {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+  const res = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -95,7 +95,7 @@ After all steps complete, return ONLY this JSON (no markdown, no backticks):
 
 async function checkPayment() {
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const res = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -467,7 +467,7 @@ export default function MedAI() {
     const n=used+1;setUsed(n);
     const u={...user,used:n};DB[user.email]=u;save(u);
     try{
-      const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
+      const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:SYSTEM_PROMPT,messages:newMsgs})});
       const data=await res.json();
       setMsgs([...newMsgs,{role:"assistant",content:data.content?.[0]?.text||"Sin respuesta."}]);

@@ -49,7 +49,7 @@ const saveStripeLinks = (d) => {
 async function setupStripe() {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", \"x-api-key\": \"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\", \"anthropic-version\": \"2023-06-01\" },
     body: JSON.stringify({
       model: "claude-sonnet-4-20250514",
       max_tokens: 2000,
@@ -97,7 +97,7 @@ async function checkPayment() {
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", \"x-api-key\": \"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\", \"anthropic-version\": \"2023-06-01\" },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 300,
@@ -579,3 +579,4 @@ export default function MedAI() {
     </main>
   </div>;
 }
+
